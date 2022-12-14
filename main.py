@@ -1,5 +1,8 @@
 import os
 
+import numpy as np
+from PIL import Image
+
 import torch
 import torchvision
 import torch.nn as nn
@@ -41,6 +44,37 @@ torch.manual_seed(random_seed)
 BATCH_SIZE=128
 AVAIL_GPUS = min(1, torch.cuda.device_count())
 NUM_WORKERS=int(os.cpu_count() / 2)
+
+# Set the directory containing the images
+dir = "data/Carss"
+
+# Create a list to store the images
+dataset_images = []
+
+# Loop through all the images in the directory
+for filename in os.listdir(dir):
+    if filename == '.DS_Store':
+        continue
+    # Open the image
+    img = Image.open(os.path.join(dir, filename))
+
+    # Convert the image to grayscale
+    img = img.convert("L")
+
+    # Resize the image to 28x28 pixels
+    img = img.resize((28, 28), Image.ANTIALIAS)
+
+    # Convert the image to a NumPy array
+    img_array = np.asarray(img)
+
+    # Add the image to the list of images
+    dataset_images.append(img_array)
+
+# Convert the list of images to a NumPy array
+mnist_images = np.array(dataset_images)
+
+# Save the NumPy array as a .npy file
+np.save("mnist_images.npy", mnist_images)
 
 
 # MNIST
